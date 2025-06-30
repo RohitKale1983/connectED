@@ -64,7 +64,7 @@ Follow these steps to get a copy of the project up and running on your local mac
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/RohitKale1983/connectED.git
 cd sppu-student-portal
 ```
 
