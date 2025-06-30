@@ -6,23 +6,28 @@ const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
 const Message = require("./models/messageModel");
-const Notification = require("./models/notificationModel"); 
+const Notification = require("./models/notificationModel");
 
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 
-// Setup Socket.IO server
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://connect-ed-liard.vercel.app", 
     methods: ["GET", "POST"],
   },
 });
 
-// Middleware
-app.use(cors());
+// Middleware - ***UPDATED CORS HERE***
+app.use(
+  cors({
+    origin: "https://connect-ed-liard.vercel.app", 
+    credentials: true, 
+  })
+);
 app.use(express.json());
 
 // MongoDB connection
@@ -46,7 +51,6 @@ app.use("/api/reviews", require("./routes/reviewRoutes"));
 app.use("/api/questionnaire", require("./routes/questionnaireRoutes"));
 app.use("/api/career-finder", require("./routes/careerFinderRoutes"));
 
-
 // === Socket.IO Logic ===
 const onlineUsers = new Map();
 
@@ -58,34 +62,34 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async ({ senderId, receiverId, message }) => {
-  try {
-    // 1. Save message to DB
-    const savedMessage = await Message.create({
-      sender: senderId,
-      receiver: receiverId,
-      content: message,
-    });
+    try {
+      // 1. Save message to DB
+      const savedMessage = await Message.create({
+        sender: senderId,
+        receiver: receiverId,
+        content: message,
+      });
 
-    // 2. Create a notification for the receiver
-    await Notification.create({
-      userId: receiverId,
-      message: "You received a new message",
-      type: "message",
-      data: { senderId },
-    });
+      // 2. Create a notification for the receiver
+      await Notification.create({
+        userId: receiverId,
+        message: "You received a new message",
+        type: "message",
+        data: { senderId },
+      });
 
-    // 3. Emit message to receiver if online
-    const receiverSocket = onlineUsers.get(receiverId);
-    if (receiverSocket) {
-      io.to(receiverSocket).emit("receiveMessage", savedMessage);
+      // 3. Emit message to receiver if online
+      const receiverSocket = onlineUsers.get(receiverId);
+      if (receiverSocket) {
+        io.to(receiverSocket).emit("receiveMessage", savedMessage);
+      }
+
+      // 4. Emit message back to sender (for their UI)
+      socket.emit("receiveMessage", savedMessage);
+    } catch (err) {
+      console.error("❌ Failed to send message:", err);
     }
-
-    // 4. Emit message back to sender (for their UI)
-    socket.emit("receiveMessage", savedMessage);
-  } catch (err) {
-    console.error("❌ Failed to send message:", err);
-  }
-});
+  });
 
   socket.on("disconnect", () => {
     console.log("❌ Client disconnected:", socket.id);
