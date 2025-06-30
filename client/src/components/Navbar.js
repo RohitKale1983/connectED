@@ -1,6 +1,6 @@
 // client/src/components/Layout/Navbar.js
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { NavLink, useNavigate } from "react-router-dom";
 import ConnectEDLogo from "../assets/logo.png"; 
 
@@ -13,7 +13,7 @@ const Navbar = ({ onProfileClick, user }) => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const res = await axios.get("/api/notifications/unread-count", {
+        const res = await api.get("/api/notifications/unread-count", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

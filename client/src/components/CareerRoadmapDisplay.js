@@ -1,6 +1,6 @@
 // src/components/CareerRoadmapDisplay.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../api";
 import { toast } from 'react-toastify';
 
 const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
@@ -48,7 +48,7 @@ const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await api.post(
         '/api/career-finder/save-roadmap',
         {
           careerName: careerName,
@@ -107,7 +107,7 @@ const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
         return;
       }
 
-      await axios.put(
+      await api.put(
         `/api/career-finder/roadmap/update-item-status/${career._id}`,
         { yearIndex, itemType, itemIndex, completed: isCompleted },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -148,7 +148,7 @@ const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
         return;
       }
 
-      await axios.put(
+      await api.put(
         `/api/career-finder/roadmap/update-notes/${career._id}`,
         { yearIndex, userNotes: newNotes },
         { headers: { Authorization: `Bearer ${token}` } }

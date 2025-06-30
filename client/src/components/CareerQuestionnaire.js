@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../../api";
 import { toast } from 'react-toastify';
 
 // Static data (as fallback)
@@ -47,7 +47,7 @@ const CareerQuestionnaire = ({ onFormSubmit }) => {
     const fetchOptions = async () => {
       try {
         setLoadingOptions(true);
-        const response = await axios.get('/api/questionnaire/options');
+        const response = await api.get('/api/questionnaire/options');
         setOptions(prev => ({
           ...prev, // Keep existing defaults if any missing from backend
           ...response.data

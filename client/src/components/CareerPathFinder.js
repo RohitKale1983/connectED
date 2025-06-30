@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import CareerQuestionnaire from './CareerQuestionnaire';
 import CareerSuggestionsDisplay from './CareerSuggestionsDisplay';
 import CareerRoadmapDisplay from './CareerRoadmapDisplay';
-import axios from 'axios';
+import api from "../api";
 import { toast } from 'react-toastify';
 
 const CareerPathFinder = () => {
@@ -35,7 +35,7 @@ const CareerPathFinder = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await api.post(
         '/api/career-finder/suggest',
         data,
         {
@@ -84,7 +84,7 @@ const CareerPathFinder = () => {
         return;
       }
 
-      const response = await axios.post(
+      const response = await api.post(
         '/api/career-finder/roadmap',
         {
           selectedCareerName: career.careerName,
