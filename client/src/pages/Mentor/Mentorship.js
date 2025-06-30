@@ -15,7 +15,7 @@ const Mentorship = () => {
 
   const fetchAllMentors = async () => {
     try {
-      const res = await api.get("/mentors/all");
+      const res = await api.get("/api/mentors/all");
       const fetchedMentors = res.data.map((mentor) => ({
         ...mentor,
         skills: mentor.skills || [],
@@ -44,7 +44,7 @@ const Mentorship = () => {
     const requests = mentorList.map(async (mentor) => {
       try {
         const res = await api.get(
-          `/mentors/request/status/${mentor.user._id}`,
+          `/api/mentors/request/status/${mentor.user._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -69,7 +69,7 @@ const Mentorship = () => {
         setUserReviews(new Map());
         return;
       }
-      const res = await api.get("/reviews/myreviews", {
+      const res = await api.get("/api/reviews/myreviews", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -121,7 +121,7 @@ const Mentorship = () => {
         return;
       }
       const res = await api.post(
-        "/mentors/request",
+        "/api/mentors/request",
         { mentorId },
         {
           headers: {
@@ -161,7 +161,7 @@ const Mentorship = () => {
 
       if (existingReview && existingReview.reviewId) {
         apiCall = api.put(
-          `/reviews/${existingReview.reviewId}`,
+          `/api/reviews/${existingReview.reviewId}`,
           {
             rating: ratingValue,
             comment: ratingComment,
@@ -173,7 +173,7 @@ const Mentorship = () => {
         successMessage = "Review updated successfully!";
       } else {
         apiCall = api.post(
-          "/reviews",
+          "/api/reviews",
           {
             mentorId,
             rating: ratingValue,

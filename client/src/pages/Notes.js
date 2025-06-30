@@ -75,7 +75,7 @@ const Notes = () => {
 
   const fetchNotes = async () => {
     try {
-      const res = await api.get("/notes");
+      const res = await api.get("/api/notes");
       setNotes(res.data); 
     } catch (err) {
       console.error("Error fetching notes:", err);
@@ -103,7 +103,7 @@ const Notes = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await api.post("/notes/upload", data, {
+      await api.post("/api/notes/upload", data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

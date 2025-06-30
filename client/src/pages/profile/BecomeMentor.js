@@ -22,7 +22,7 @@ const BecomeMentor = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const checkRes = await api.get("/mentors/check", {
+        const checkRes = await api.get("/api/mentors/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setIsMentor(checkRes.data.isMentor);
@@ -61,7 +61,7 @@ const BecomeMentor = () => {
         skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
       };
 
-      const { data } = await api.post("/mentors/apply", payload, {
+      const { data } = await api.post("/api/mentors/apply", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -7,7 +7,7 @@ const MentorList = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await api.get("/mentors/all");
+      const res = await api.get("/api/mentors/all");
       setMentors(res.data);
     } catch (err) {
       console.error("Failed to fetch mentors", err);

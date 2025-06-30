@@ -18,7 +18,7 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await api.get("/users/profile", {
+        const { data } = await api.get("/api/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ const ProfilePage = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const { data } = await api.put("/users/profile", form, {
+      const { data } = await api.put("/api/users/profile", form, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

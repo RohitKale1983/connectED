@@ -16,7 +16,7 @@ const ConnectedChats = () => {
     setLoadingUsers(true); // Set loading true before fetching
     try {
       const token = localStorage.getItem("token");
-      const res = await api.get("/mentors/connected", {
+      const res = await api.get("/api/mentors/connected", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

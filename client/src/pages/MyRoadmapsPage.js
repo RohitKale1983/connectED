@@ -25,7 +25,7 @@ const MyRoadmapsPage = () => {
         return;
       }
 
-      const response = await api.get('/career-finder/my-roadmaps', {
+      const response = await api.get('/api/career-finder/my-roadmaps', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

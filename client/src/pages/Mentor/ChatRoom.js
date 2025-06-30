@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import api from "../../api";
 import { toast } from "react-toastify";
 
-const socket = io("http://localhost:5000"); 
+const socket = io("https://connected-backend-6yoi.onrender.com"); 
 
 const ChatRoom = ({ user, onBackToUsers }) => {
   const [messages, setMessages] = useState([]);
@@ -23,7 +23,7 @@ const ChatRoom = ({ user, onBackToUsers }) => {
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await api.get(`/messages/${user._id}`, {
+        const res = await api.get(`/api/messages/${user._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessages(res.data);
@@ -100,7 +100,7 @@ const ChatRoom = ({ user, onBackToUsers }) => {
     try {
       const token = localStorage.getItem("token");
       await api.put(
-        `/messages/delete/${messageId}`,
+        `/api/messages/delete/${messageId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

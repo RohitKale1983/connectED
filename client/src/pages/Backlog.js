@@ -144,7 +144,7 @@ const Backlog = () => {
 
             // Fetch all replies for all fetched posts concurrently
             const replyPromises = fetchedPosts.map(async post => {
-                const resReplies = await api.get(`/backlog/${post._id}/replies`, { headers });
+                const resReplies = await api.get(`/api/backlog/${post._id}/replies`, { headers });
                 // Attach flat replies array to the post object temporarily
                 return { ...post, rawReplies: resReplies.data };
             });
@@ -218,7 +218,7 @@ const Backlog = () => {
         }
         try {
             const token = localStorage.getItem("token");
-            const response = await api.post("/backlog", newPost, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await api.post("/api/backlog", newPost, { headers: { Authorization: `Bearer ${token}` } });
 
             // Since replies are fetched separately now, we'll add the new post
             // and then refetch my posts to ensure replies are loaded if any are added immediately (unlikely)
@@ -299,7 +299,7 @@ const Backlog = () => {
     const toggleUpvote = async (postId) => {
         try {
             const token = localStorage.getItem("token");
-            await api.post(`/backlog/upvote/${postId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+            await api.post(`/api/backlog/upvote/${postId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
             // Re-fetch posts to reflect the upvote change
             // This will also trigger the reply fetching and tree building

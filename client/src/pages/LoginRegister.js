@@ -27,7 +27,7 @@ const LoginRegister = () => {
     e.preventDefault();
     // No need to clear internal messages, Toastify handles its own lifecycle
 
-    const url = isLogin ? "/auth/login" : "/auth/register";
+    const url = isLogin ? "/api/auth/login" : "/api/auth/register";
 
     try {
       const res = await api.post(url, formData);

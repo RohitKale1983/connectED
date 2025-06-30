@@ -15,7 +15,7 @@ const MentorshipHub = () => {
         setLoading(false);
         return;
       }
-      const res = await api.get("/mentors/check", {
+      const res = await api.get("/api/mentors/check", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -20,7 +20,7 @@ const UpdateMentorProfile = () => {
     const fetchData = async () => {
       setLoading(true); // Set loading true for initial data fetch
       try {
-        const res = await api.get("/mentors/check", {
+        const res = await api.get("/api/mentors/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -74,7 +74,7 @@ const UpdateMentorProfile = () => {
           .filter(Boolean),
       };
 
-      await api.put("/mentors/update", payload, {
+      await api.put("/api/mentors/update", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

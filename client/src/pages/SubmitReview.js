@@ -10,7 +10,7 @@ const SubmitReview = ({ mentorId }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await api.post(`/reviews/${mentorId}`, { rating, comment }, {
+      await api.post(`/api/reviews/${mentorId}`, { rating, comment }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Review submitted!");

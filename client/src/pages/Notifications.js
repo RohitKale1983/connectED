@@ -20,7 +20,7 @@ const Notifications = () => {
     setError(null);
     setShowErrorAlert(false);
     try {
-      const res = await api.get("/notifications", { headers });
+      const res = await api.get("/api/notifications", { headers });
       setNotifications(res.data);
     } catch (err) {
       console.error("Error fetching notifications:", err);
@@ -35,7 +35,7 @@ const Notifications = () => {
   /* Mark every notification as read */
   const markAllAsRead = async () => {
     try {
-      await api.put("/notifications/mark-all-read", {}, { headers });
+      await api.put("/api/notifications/mark-all-read", {}, { headers });
       await fetchNotifications();
       toast.success("All notifications marked as read!");
     } catch (err) {
@@ -47,7 +47,7 @@ const Notifications = () => {
   /** 💡 New Function: Mark a single notification as read */
   const markNotificationAsRead = async (notificationId) => {
     try {
-      await api.patch(`/notifications/${notificationId}/read`, {}, { headers });
+      await api.patch(`/api/notifications/${notificationId}/read`, {}, { headers });
       setNotifications((prevNotifications) =>
         prevNotifications.map((n) =>
           n._id === notificationId ? { ...n, isRead: true } : n
@@ -67,7 +67,7 @@ const Notifications = () => {
       return;
     }
     try {
-      await api.delete("/notifications/clear-read", { headers });
+      await api.delete("/api/notifications/clear-read", { headers });
       await fetchNotifications();
       toast.success("Read notifications cleared!");
     } catch (err) {

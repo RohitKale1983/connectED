@@ -10,7 +10,7 @@ const ViewProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await api.get("/users/profile", {
+        const { data } = await api.get("/api/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -18,7 +18,7 @@ const ViewProfile = () => {
 
         setUser(data);
 
-        const mentorRes = await api.get("/mentors/check", {
+        const mentorRes = await api.get("/api/mentors/check", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

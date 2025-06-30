@@ -12,7 +12,7 @@ const ConnectionRequests = () => {
     setLoading(true); // Ensure loading is true right at the start of fetch
     try {
       const token = localStorage.getItem("token");
-      const res = await api.get("/mentors/requests", {
+      const res = await api.get("/api/mentors/requests", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ const ConnectionRequests = () => {
     try {
       const token = localStorage.getItem("token");
       await api.patch(
-        `/mentors/request/${id}/${action}`,
+        `/api/mentors/request/${id}/${action}`,
         {},
         {
           headers: {
