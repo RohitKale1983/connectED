@@ -1,6 +1,6 @@
 // client/src/components/Layout/Navbar.js
 import React, { useEffect, useState } from "react";
-import api from "../../api";
+import api from "../api";
 import { NavLink, useNavigate } from "react-router-dom";
 import ConnectEDLogo from "../assets/logo.png"; 
 

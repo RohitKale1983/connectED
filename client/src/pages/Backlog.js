@@ -158,7 +158,7 @@ const Backlog = () => {
             }));
 
             // Logic for reply notifications on MY posts
-            if (fetchUrl === "/backlog/me") {
+            if (fetchUrl === "api/backlog/me") {
                 postsWithNestedReplies.forEach(newPostData => {
                     const postId = newPostData._id;
                     // Count total replies (including nested) for the post
@@ -200,12 +200,12 @@ const Backlog = () => {
     };
 
     const fetchAllPosts = async () => {
-        const posts = await fetchPostsAndReplies("/backlog");
+        const posts = await fetchPostsAndReplies("api/backlog");
         setAllPosts(posts);
     };
 
     const fetchMyPosts = async () => {
-        const posts = await fetchPostsAndReplies("/backlog/me");
+        const posts = await fetchPostsAndReplies("api/backlog/me");
         setMyPosts(posts);
     };
 
@@ -260,10 +260,10 @@ const Backlog = () => {
 
             if (isParentAPost) {
                 // This is a top-level reply to a post
-                endpoint = `/backlog/${parentId}/replies`;
+                endpoint = `api/backlog/${parentId}/replies`;
             } else {
                 // This is a nested reply to an existing reply (parentId is a reply._id)
-                endpoint = `/backlog/reply/${parentId}/replies`;
+                endpoint = `api/backlog/reply/${parentId}/replies`;
             }
 
             await api.post(endpoint, { text: text }, { headers: { Authorization: `Bearer ${token}` } });
