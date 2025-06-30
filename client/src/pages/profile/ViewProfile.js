@@ -38,7 +38,7 @@ const ViewProfile = () => {
   return (
     <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <img
-        src={user.profilePic || "https://ui-avatars.com/?name=User"}
+        src={user.profilePic || "https://ui-avatars.com/api/?name=User"}
         alt="Profile"
         className="w-24 h-24 rounded-full mx-auto mb-4"
       />

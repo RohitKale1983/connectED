@@ -282,7 +282,7 @@ const Mentorship = () => {
                       <img
                         src={
                           mentor.user.profilePic ||
-                          `https://ui-avatars.com/?name=${encodeURIComponent(
+                          `https://ui-avatars.com/api?name=${encodeURIComponent(
                             mentor.user.name
                           )}&background=818cf8&color=fff&size=96&bold=true`
                         }

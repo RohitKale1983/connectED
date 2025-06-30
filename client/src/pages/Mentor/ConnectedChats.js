@@ -130,7 +130,7 @@ const ConnectedChats = () => {
                 <img
                   src={
                     user.profilePic ||
-                    `https://ui-avatars.com/?name=${encodeURIComponent(user.name)}&background=E0E7FF&color=4338CA&size=48` // More consistent colors
+                    `https://ui-avatars.com/api?name=${encodeURIComponent(user.name)}&background=E0E7FF&color=4338CA&size=48` // More consistent colors
                   }
                   className="w-12 h-12 rounded-full object-cover border-2 border-transparent group-hover:border-indigo-400 transition-colors duration-200"
                   alt={`${user.name}'s avatar`}

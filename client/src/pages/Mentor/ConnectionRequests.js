@@ -142,7 +142,7 @@ const ConnectionRequests = () => {
                     <img
                       src={
                         req.sender.profilePic ||
-                        `https://ui-avatars.com/?name=${req.sender.name}&background=6366F1&color=fff&size=60&font-size=0.33` // Custom background color for avatars
+                        `https://ui-avatars.com/api?name=${req.sender.name}&background=6366F1&color=fff&size=60&font-size=0.33` // Custom background color for avatars
                       }
                       className="w-16 h-16 rounded-full object-cover border-3 border-indigo-500 shadow-sm" // Increased border width, added shadow
                       alt={req.sender.name}
