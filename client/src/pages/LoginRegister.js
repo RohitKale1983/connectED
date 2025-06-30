@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import axios from "axios";
+import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify'; // Import Toastify
@@ -27,10 +27,10 @@ const LoginRegister = () => {
     e.preventDefault();
     // No need to clear internal messages, Toastify handles its own lifecycle
 
-    const url = isLogin ? "/api/auth/login" : "/api/auth/register";
+    const url = isLogin ? "/auth/login" : "/auth/register";
 
     try {
-      const res = await axios.post(url, formData);
+      const res = await api.post(url, formData);
 
       if (isLogin) {
         login(res.data.token, res.data.user);

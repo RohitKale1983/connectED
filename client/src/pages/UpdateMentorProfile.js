@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { toast } from "react-toastify";
 
 const UpdateMentorProfile = () => {
@@ -20,7 +20,7 @@ const UpdateMentorProfile = () => {
     const fetchData = async () => {
       setLoading(true); // Set loading true for initial data fetch
       try {
-        const res = await axios.get("/api/mentors/check", {
+        const res = await api.get("/mentors/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -74,7 +74,7 @@ const UpdateMentorProfile = () => {
           .filter(Boolean),
       };
 
-      await axios.put("/api/mentors/update", payload, {
+      await api.put("/mentors/update", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

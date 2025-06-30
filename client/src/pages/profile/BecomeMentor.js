@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const BecomeMentor = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const checkRes = await axios.get("/api/mentors/check", {
+        const checkRes = await api.get("/mentors/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setIsMentor(checkRes.data.isMentor);
@@ -61,7 +61,7 @@ const BecomeMentor = () => {
         skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
       };
 
-      const { data } = await axios.post("/api/mentors/apply", payload, {
+      const { data } = await api.post("/mentors/apply", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

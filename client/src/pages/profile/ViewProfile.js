@@ -1,6 +1,6 @@
 // ✅ ViewProfile.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 
 const ViewProfile = () => {
   const [user, setUser] = useState(null);
@@ -10,7 +10,7 @@ const ViewProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await axios.get("/api/users/profile", {
+        const { data } = await api.get("/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -18,7 +18,7 @@ const ViewProfile = () => {
 
         setUser(data);
 
-        const mentorRes = await axios.get("/api/mentors/check", {
+        const mentorRes = await api.get("/mentors/check", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +38,7 @@ const ViewProfile = () => {
   return (
     <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <img
-        src={user.profilePic || "https://ui-avatars.com/api/?name=User"}
+        src={user.profilePic || "https://ui-avatars.com/?name=User"}
         alt="Profile"
         className="w-24 h-24 rounded-full mx-auto mb-4"
       />

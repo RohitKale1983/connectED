@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 
 const socket = io("http://localhost:5000"); 
@@ -23,7 +23,7 @@ const ChatRoom = ({ user, onBackToUsers }) => {
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`/api/messages/${user._id}`, {
+        const res = await api.get(`/messages/${user._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessages(res.data);
@@ -99,8 +99,8 @@ const ChatRoom = ({ user, onBackToUsers }) => {
     // if (window.confirm("Are you sure you want to delete this message?")) {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `/api/messages/delete/${messageId}`,
+      await api.put(
+        `/messages/delete/${messageId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

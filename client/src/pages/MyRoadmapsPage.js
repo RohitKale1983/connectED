@@ -1,6 +1,6 @@
 // src/pages/MyRoadmapsPage.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "../api";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CareerRoadmapDisplay from '../components/CareerRoadmapDisplay';
@@ -25,7 +25,7 @@ const MyRoadmapsPage = () => {
         return;
       }
 
-      const response = await axios.get('/api/career-finder/my-roadmaps', {
+      const response = await api.get('/career-finder/my-roadmaps', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +62,7 @@ const MyRoadmapsPage = () => {
         return;
       }
 
-      await axios.delete(`/api/career-finder/delete-roadmap/${roadmapId}`, {
+      await api.delete(`/career-finder/delete-roadmap/${roadmapId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

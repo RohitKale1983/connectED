@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 
 const MentorshipHub = () => {
   const [isMentor, setIsMentor] = useState(false);
@@ -15,7 +15,7 @@ const MentorshipHub = () => {
         setLoading(false);
         return;
       }
-      const res = await axios.get("/api/mentors/check", {
+      const res = await api.get("/mentors/check", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

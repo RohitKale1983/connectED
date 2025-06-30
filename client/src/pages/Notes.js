@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify'; // For better notifications
 import 'react-toastify/dist/ReactToastify.css'; // Toastify CSS
@@ -75,8 +75,8 @@ const Notes = () => {
 
   const fetchNotes = async () => {
     try {
-      const res = await axios.get("/api/notes");
-      setNotes(res.data); // Access .notes from API (assuming the API returns an object with a 'notes' key)
+      const res = await api.get("/notes");
+      setNotes(res.data); 
     } catch (err) {
       console.error("Error fetching notes:", err);
     }
@@ -103,7 +103,7 @@ const Notes = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("/api/notes/upload", data, {
+      await api.post("/notes/upload", data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -434,7 +434,7 @@ const Notes = () => {
                     </div>
                   </div>
                   <a
-                    href={`http://localhost:5000/api/notes/download/${note._id}`}
+                    href={`/notes/download/${note._id}`}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-4 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200 ease-in-out transform hover:scale-105"

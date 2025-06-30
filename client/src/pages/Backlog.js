@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify'; // Removed ToastContainer import as it's in App.js
 
@@ -90,7 +90,7 @@ const ReplyItem = ({ reply, postId, onReplySubmit, replyText, setReplyText, dept
                         <ReplyItem
                             key={childReply._id}
                             reply={childReply}
-                            postId={postId} // Still need original postId for backend API calls
+                            postId={postId} 
                             onReplySubmit={onReplySubmit}
                             replyText={replyText}
                             setReplyText={setReplyText}
@@ -139,12 +139,12 @@ const Backlog = () => {
         try {
             const token = localStorage.getItem("token");
             const headers = { Authorization: `Bearer ${token}` };
-            const resPosts = await axios.get(fetchUrl, { headers });
+            const resPosts = await api.get(fetchUrl, { headers });
             const fetchedPosts = resPosts.data;
 
             // Fetch all replies for all fetched posts concurrently
             const replyPromises = fetchedPosts.map(async post => {
-                const resReplies = await axios.get(`/api/backlog/${post._id}/replies`, { headers });
+                const resReplies = await api.get(`/backlog/${post._id}/replies`, { headers });
                 // Attach flat replies array to the post object temporarily
                 return { ...post, rawReplies: resReplies.data };
             });
@@ -158,7 +158,7 @@ const Backlog = () => {
             }));
 
             // Logic for reply notifications on MY posts
-            if (fetchUrl === "/api/backlog/me") {
+            if (fetchUrl === "/backlog/me") {
                 postsWithNestedReplies.forEach(newPostData => {
                     const postId = newPostData._id;
                     // Count total replies (including nested) for the post
@@ -200,12 +200,12 @@ const Backlog = () => {
     };
 
     const fetchAllPosts = async () => {
-        const posts = await fetchPostsAndReplies("/api/backlog");
+        const posts = await fetchPostsAndReplies("/backlog");
         setAllPosts(posts);
     };
 
     const fetchMyPosts = async () => {
-        const posts = await fetchPostsAndReplies("/api/backlog/me");
+        const posts = await fetchPostsAndReplies("/backlog/me");
         setMyPosts(posts);
     };
 
@@ -218,7 +218,7 @@ const Backlog = () => {
         }
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.post("/api/backlog", newPost, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await api.post("/backlog", newPost, { headers: { Authorization: `Bearer ${token}` } });
 
             // Since replies are fetched separately now, we'll add the new post
             // and then refetch my posts to ensure replies are loaded if any are added immediately (unlikely)
@@ -260,13 +260,13 @@ const Backlog = () => {
 
             if (isParentAPost) {
                 // This is a top-level reply to a post
-                endpoint = `/api/backlog/${parentId}/replies`;
+                endpoint = `/backlog/${parentId}/replies`;
             } else {
                 // This is a nested reply to an existing reply (parentId is a reply._id)
-                endpoint = `/api/backlog/reply/${parentId}/replies`;
+                endpoint = `/backlog/reply/${parentId}/replies`;
             }
 
-            await axios.post(endpoint, { text: text }, { headers: { Authorization: `Bearer ${token}` } });
+            await api.post(endpoint, { text: text }, { headers: { Authorization: `Bearer ${token}` } });
 
             setReplyText((prev) => ({ ...prev, [parentId]: "" })); // Clear specific input field
 
@@ -299,7 +299,7 @@ const Backlog = () => {
     const toggleUpvote = async (postId) => {
         try {
             const token = localStorage.getItem("token");
-            await axios.post(`/api/backlog/upvote/${postId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+            await api.post(`/backlog/upvote/${postId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
             // Re-fetch posts to reflect the upvote change
             // This will also trigger the reply fetching and tree building
@@ -350,7 +350,7 @@ const Backlog = () => {
                                 <ReplyItem
                                     key={reply._id}
                                     reply={reply}
-                                    postId={post._id} // Pass postId to ReplyItem for API calls
+                                    postId={post._id} 
                                     onReplySubmit={replyTo} // Pass the main reply handler
                                     replyText={replyText}
                                     setReplyText={setReplyText}

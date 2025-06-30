@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { toast } from "react-toastify";
 
 const MentorList = () => {
@@ -7,7 +7,7 @@ const MentorList = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axios.get("/api/mentors/all");
+      const res = await api.get("/mentors/all");
       setMentors(res.data);
     } catch (err) {
       console.error("Failed to fetch mentors", err);
@@ -29,7 +29,7 @@ const MentorList = () => {
             className="bg-white shadow-md p-4 rounded-2xl flex flex-col items-center text-center"
           >
             <img
-              src={mentor.profilePic || `https://ui-avatars.com/api/?name=${mentor.user.name}`}
+              src={mentor.profilePic || `https://ui-avatars.com/?name=${mentor.user.name}`}
               alt="mentor"
               className="w-20 h-20 rounded-full mb-3"
             />

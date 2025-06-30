@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const ConnectionRequests = () => {
     setLoading(true); // Ensure loading is true right at the start of fetch
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("/api/mentors/requests", {
+      const res = await api.get("/mentors/requests", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -33,8 +33,8 @@ const ConnectionRequests = () => {
   const handleAction = async (id, action) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.patch(
-        `/api/mentors/request/${id}/${action}`,
+      await api.patch(
+        `/mentors/request/${id}/${action}`,
         {},
         {
           headers: {
@@ -142,7 +142,7 @@ const ConnectionRequests = () => {
                     <img
                       src={
                         req.sender.profilePic ||
-                        `https://ui-avatars.com/api/?name=${req.sender.name}&background=6366F1&color=fff&size=60&font-size=0.33` // Custom background color for avatars
+                        `https://ui-avatars.com/?name=${req.sender.name}&background=6366F1&color=fff&size=60&font-size=0.33` // Custom background color for avatars
                       }
                       className="w-16 h-16 rounded-full object-cover border-3 border-indigo-500 shadow-sm" // Increased border width, added shadow
                       alt={req.sender.name}

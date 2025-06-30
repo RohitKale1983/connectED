@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 
 const EditProfile = () => {
@@ -17,7 +17,7 @@ const EditProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await axios.get("/api/users/profile", {
+        const { data } = await api.get("/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ const EditProfile = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.put("/api/users/profile", form, {
+      const { data } = await api.put("/users/profile", form, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

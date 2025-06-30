@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { toast } from "react-toastify";
 
 const SubmitReview = ({ mentorId }) => {
@@ -10,7 +10,7 @@ const SubmitReview = ({ mentorId }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`/api/reviews/${mentorId}`, { rating, comment }, {
+      await api.post(`/reviews/${mentorId}`, { rating, comment }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Review submitted!");

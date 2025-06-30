@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 
 const Mentorship = () => {
@@ -13,11 +13,9 @@ const Mentorship = () => {
 
   const token = localStorage.getItem("token");
 
-  // --- API Calls ---
-
   const fetchAllMentors = async () => {
     try {
-      const res = await axios.get("/api/mentors/all");
+      const res = await api.get("/mentors/all");
       const fetchedMentors = res.data.map((mentor) => ({
         ...mentor,
         skills: mentor.skills || [],
@@ -45,8 +43,8 @@ const Mentorship = () => {
     const statuses = {};
     const requests = mentorList.map(async (mentor) => {
       try {
-        const res = await axios.get(
-          `/api/mentors/request/status/${mentor.user._id}`,
+        const res = await api.get(
+          `/mentors/request/status/${mentor.user._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -71,7 +69,7 @@ const Mentorship = () => {
         setUserReviews(new Map());
         return;
       }
-      const res = await axios.get("/api/reviews/myreviews", {
+      const res = await api.get("/reviews/myreviews", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -122,8 +120,8 @@ const Mentorship = () => {
         setConnectionStatuses((prev) => ({ ...prev, [mentorId]: "none" }));
         return;
       }
-      const res = await axios.post(
-        "/api/mentors/request",
+      const res = await api.post(
+        "/mentors/request",
         { mentorId },
         {
           headers: {
@@ -162,8 +160,8 @@ const Mentorship = () => {
       let successMessage;
 
       if (existingReview && existingReview.reviewId) {
-        apiCall = axios.put(
-          `/api/reviews/${existingReview.reviewId}`,
+        apiCall = api.put(
+          `/reviews/${existingReview.reviewId}`,
           {
             rating: ratingValue,
             comment: ratingComment,
@@ -174,8 +172,8 @@ const Mentorship = () => {
         );
         successMessage = "Review updated successfully!";
       } else {
-        apiCall = axios.post(
-          "/api/reviews",
+        apiCall = api.post(
+          "/reviews",
           {
             mentorId,
             rating: ratingValue,
@@ -284,7 +282,7 @@ const Mentorship = () => {
                       <img
                         src={
                           mentor.user.profilePic ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                          `https://ui-avatars.com/?name=${encodeURIComponent(
                             mentor.user.name
                           )}&background=818cf8&color=fff&size=96&bold=true`
                         }

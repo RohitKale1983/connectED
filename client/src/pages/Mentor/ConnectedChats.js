@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 import ChatRoom from "./ChatRoom"; // Assuming ChatRoom can accept an onBackToUsers prop
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ const ConnectedChats = () => {
     setLoadingUsers(true); // Set loading true before fetching
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("/api/mentors/connected", {
+      const res = await api.get("/mentors/connected", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -130,7 +130,7 @@ const ConnectedChats = () => {
                 <img
                   src={
                     user.profilePic ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=E0E7FF&color=4338CA&size=48` // More consistent colors
+                    `https://ui-avatars.com/?name=${encodeURIComponent(user.name)}&background=E0E7FF&color=4338CA&size=48` // More consistent colors
                   }
                   className="w-12 h-12 rounded-full object-cover border-2 border-transparent group-hover:border-indigo-400 transition-colors duration-200"
                   alt={`${user.name}'s avatar`}
