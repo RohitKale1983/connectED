@@ -19,28 +19,40 @@ const allowedOrigins = [
   process.env.CORS_ORIGIN_DEVELOPMENT // e.g., http://localhost:3000
 ];
 
-// Function to check if the origin is allowed
-const corsOptionsDelegate = (req, callback) => {
-  let corsOptions;
-  if (allowedOrigins.indexOf(req.header('Origin')) !== -1 || !req.header('Origin')) {
-    // Allow requests with allowed origins or no origin (like Postman/curl)
-    corsOptions = { origin: true, credentials: true };
-  } else {
-    corsOptions = { origin: false }; // Deny other origins
-  }
-  callback(null, corsOptions);
-};
+// ⭐ DELETE THE OLD corsOptionsDelegate FUNCTION FROM HERE ⭐
+// const corsOptionsDelegate = (req, callback) => {
+//   let corsOptions;
+//   if (allowedOrigins.indexOf(req.header('Origin')) !== -1 || !req.header('Origin')) {
+//     // Allow requests with allowed origins or no origin (like Postman/curl)
+//     corsOptions = { origin: true, credentials: true };
+//   } else {
+//     corsOptions = { origin: false }; // Deny other origins
+//   }
+//   callback(null, corsOptions);
+// };
 
+
+// ⭐ UPDATED Socket.IO CORS Configuration ⭐
 const io = new Server(server, {
   cors: {
-    origin: corsOptionsDelegate, // Use the dynamic origin function
+    origin: allowedOrigins, // ⭐ CHANGE: Directly pass the array of allowed origins
     methods: ["GET", "POST", "PUT", "DELETE"], // Add other methods your API uses
     credentials: true,
   },
 });
 
-// Middleware for HTTP requests (Axios) - ***UPDATED CORS HERE***
-app.use(cors(corsOptionsDelegate)); // Use the dynamic origin function
+// ⭐ UPDATED Middleware for HTTP requests (Axios) CORS Configuration ⭐
+app.use(cors({
+  origin: (origin, callback) => {
+    // This function for Express's CORS takes 'origin' directly as a string
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 
@@ -66,13 +78,18 @@ app.use("/api/questionnaire", require("./routes/questionnaireRoutes"));
 app.use("/api/career-finder", require("./routes/careerFinderRoutes"));
 
 // --------------------------Deployment------------------------------
-const __dirname1 = path.resolve();
+// ⭐ DELETE OR COMMENT OUT THIS LINE - NO LONGER NEEDED AS IS ⭐
+// const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/client/build")));
+  // ⭐ ADD THIS LINE to correctly get to the project root from the server directory
+  const rootPath = path.join(__dirname, '..'); // This navigates from 'server/' up to the 'src/' directory
+
+  // ⭐ UPDATE THESE PATHS to use rootPath ⭐
+  app.use(express.static(path.join(rootPath, "/client/build")));
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname1, "client", "build", "index.html"))
+    res.sendFile(path.resolve(rootPath, "client", "build", "index.html"))
   );
 } else {
   app.get("/", (req, res) => {
