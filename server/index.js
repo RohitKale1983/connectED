@@ -19,32 +19,18 @@ const allowedOrigins = [
   process.env.CORS_ORIGIN_DEVELOPMENT // e.g., http://localhost:3000
 ];
 
-// ⭐ DELETE THE OLD corsOptionsDelegate FUNCTION FROM HERE ⭐
-// const corsOptionsDelegate = (req, callback) => {
-//   let corsOptions;
-//   if (allowedOrigins.indexOf(req.header('Origin')) !== -1 || !req.header('Origin')) {
-//     // Allow requests with allowed origins or no origin (like Postman/curl)
-//     corsOptions = { origin: true, credentials: true };
-//   } else {
-//     corsOptions = { origin: false }; // Deny other origins
-//   }
-//   callback(null, corsOptions);
-// };
-
-
-// ⭐ UPDATED Socket.IO CORS Configuration ⭐
+// UPDATED Socket.IO CORS Configuration
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins, // ⭐ CHANGE: Directly pass the array of allowed origins
-    methods: ["GET", "POST", "PUT", "DELETE"], // Add other methods your API uses
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
 });
 
-// ⭐ UPDATED Middleware for HTTP requests (Axios) CORS Configuration ⭐
+// UPDATED Middleware for HTTP requests (Axios) CORS Configuration
 app.use(cors({
   origin: (origin, callback) => {
-    // This function for Express's CORS takes 'origin' directly as a string
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -78,14 +64,9 @@ app.use("/api/questionnaire", require("./routes/questionnaireRoutes"));
 app.use("/api/career-finder", require("./routes/careerFinderRoutes"));
 
 // --------------------------Deployment------------------------------
-// ⭐ DELETE OR COMMENT OUT THIS LINE - NO LONGER NEEDED AS IS ⭐
-// const __dirname1 = path.resolve();
-
 if (process.env.NODE_ENV === "production") {
-  // ⭐ ADD THIS LINE to correctly get to the project root from the server directory
   const rootPath = path.join(__dirname, '..'); // This navigates from 'server/' up to the 'src/' directory
 
-  // ⭐ UPDATE THESE PATHS to use rootPath ⭐
   app.use(express.static(path.join(rootPath, "/client/build")));
 
   app.get("*", (req, res) =>
@@ -99,13 +80,26 @@ if (process.env.NODE_ENV === "production") {
 // --------------------------Deployment------------------------------
 
 // === Socket.IO Logic ===
-const onlineUsers = new Map();
+const onlineUsers = new Map(); // Stores userId -> socket.id
+const userActiveChat = new Map(); // ⭐ NEW: Stores userId -> currentlyChattingWithUserId
 
 io.on("connection", (socket) => {
   console.log("🔌 New client connected:", socket.id);
 
   socket.on("register", (userId) => {
     onlineUsers.set(userId, socket.id);
+  });
+
+  // ⭐ NEW Socket.IO Event: When a user enters a specific chat
+  socket.on("user:active-in-chat", ({ userId, chattingWithUserId }) => {
+    userActiveChat.set(userId, chattingWithUserId);
+    console.log(`User ${userId} is now active in chat with ${chattingWithUserId}`);
+  });
+
+  // ⭐ NEW Socket.IO Event: When a user leaves or switches from a specific chat
+  socket.on("user:inactive-in-chat", (userId) => {
+    userActiveChat.delete(userId);
+    console.log(`User ${userId} is no longer active in chat`);
   });
 
   socket.on("sendMessage", async ({ senderId, receiverId, message }) => {
@@ -117,13 +111,19 @@ io.on("connection", (socket) => {
         content: message,
       });
 
-      // 2. Create a notification for the receiver
-      await Notification.create({
-        userId: receiverId,
-        message: "You received a new message",
-        type: "message",
-        data: { senderId },
-      });
+      // ⭐ 2. Conditional Notification Creation
+      const isReceiverActiveInChat = userActiveChat.get(receiverId) === senderId;
+      const isSenderActiveInChat = userActiveChat.get(senderId) === receiverId; // Also check if sender is active in receiver's chat
+
+      // Only create a notification if the receiver is NOT actively chatting with the sender
+      if (!isReceiverActiveInChat || !isSenderActiveInChat) {
+        await Notification.create({
+          userId: receiverId,
+          message: "You received a new message",
+          type: "message",
+          data: { senderId },
+        });
+      }
 
       // 3. Emit message to receiver if online
       const receiverSocket = onlineUsers.get(receiverId);
@@ -143,6 +143,8 @@ io.on("connection", (socket) => {
     for (let [userId, sockId] of onlineUsers.entries()) {
       if (sockId === socket.id) {
         onlineUsers.delete(userId);
+        // ⭐ Also remove from active chat map on disconnect
+        userActiveChat.delete(userId);
         break;
       }
     }

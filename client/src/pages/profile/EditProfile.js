@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"; // Keep Toastify for general errors/fallback
+import { ClipLoader } from 'react-spinners';
 
 const EditProfile = () => {
   const [form, setForm] = useState({
@@ -12,9 +13,12 @@ const EditProfile = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null); // ⭐ NEW STATE for in-component success message
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         const { data } = await api.get("/api/users/profile", {
@@ -31,9 +35,11 @@ const EditProfile = () => {
           github: data.github || "",
         });
 
-        setLoading(false);
       } catch (err) {
-        toast.error("Failed to load profile");
+        console.error("Error fetching profile:", err);
+        toast.error("Failed to load profile"); // Use toast for errors
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -46,6 +52,9 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSuccessMessage(null); // Clear any previous success message
+
     try {
       const token = localStorage.getItem("token");
       const { data } = await api.put("/api/users/profile", form, {
@@ -57,13 +66,31 @@ const EditProfile = () => {
       // Update localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      toast.success("Profile updated!");
+      // ⭐ Set the in-component success message
+      setSuccessMessage("Profile updated successfully!");
+      // ⭐ Clear the message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+
+      toast.success("Profile updated!"); // Keep Toastify for consistency if it starts working
+
     } catch (err) {
-      toast.error("Failed to update profile");
+      console.error("Error updating profile:", err);
+      toast.error("Failed to update profile"); // Use toast for errors
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full min-h-[300px]">
+        <ClipLoader color={"#4F46E5"} size={50} aria-label="Loading Profile" />
+        <p className="ml-4 text-gray-600">Loading profile data...</p>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -71,6 +98,13 @@ const EditProfile = () => {
       className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md space-y-4"
     >
       <h2 className="text-xl font-semibold text-center">Edit Your Profile</h2>
+
+      {/* ⭐ In-component success message display */}
+      {successMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center" role="alert">
+          <span className="block sm:inline">{successMessage}</span>
+        </div>
+      )}
 
       <input
         type="text"
@@ -118,9 +152,18 @@ const EditProfile = () => {
 
       <button
         type="submit"
-        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        disabled={isSubmitting}
+        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 relative w-full flex items-center justify-center"
       >
-        Save Changes
+        {isSubmitting ? (
+          <ClipLoader
+            color={"#ffffff"}
+            size={20}
+            aria-label="Saving Changes"
+          />
+        ) : (
+          "Save Changes"
+        )}
       </button>
     </form>
   );

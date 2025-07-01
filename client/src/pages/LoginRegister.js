@@ -2,8 +2,9 @@ import { useState, useContext } from "react";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify'; // Import Toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ClipLoader } from 'react-spinners'; 
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,9 +13,7 @@ const LoginRegister = () => {
     email: "",
     password: ""
   });
-  // Removed message and isError states, will use Toastify instead
-  // const [message, setMessage] = useState(null);
-  // const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // ⭐ NEW STATE for loading
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -25,7 +24,14 @@ const LoginRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // No need to clear internal messages, Toastify handles its own lifecycle
+
+    // Basic form validation
+    if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    setIsLoading(true); // ⭐ Set loading to true before API call
 
     const url = isLogin ? "/api/auth/login" : "/api/auth/register";
 
@@ -35,24 +41,26 @@ const LoginRegister = () => {
       if (isLogin) {
         login(res.data.token, res.data.user);
         toast.success("Login successful! Redirecting...", {
-          position: "top-right", // Specific position for this toast
-          autoClose: 1200, // Shorter autoClose for quick redirect feedback
-          onClose: () => navigate("/dashboard") // Navigate after toast closes
+          position: "top-right",
+          autoClose: 1200,
+          onClose: () => navigate("/dashboard")
         });
       } else {
         toast.success("Registration successful! Please log in.", {
           position: "top-center",
           autoClose: 2000,
-          onClose: () => setIsLogin(true) // Switch to login form after toast
+          onClose: () => setIsLogin(true)
         });
         setFormData({ name: "", email: "", password: "" }); // Clear form on successful registration
       }
     } catch (err) {
       const msg = err.response?.data?.message || "Something went wrong. Please try again.";
       toast.error(msg, {
-        position: "top-center", // Consistent position for errors
+        position: "top-center",
         autoClose: 3000,
       });
+    } finally {
+      setIsLoading(false); // ⭐ Set loading to false after API call (success or error)
     }
   };
 
@@ -108,9 +116,20 @@ const LoginRegister = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-blue-700 hover:to-indigo-800 transition duration-300 transform hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-lg"
+            disabled={isLoading} // ⭐ Disable button while loading
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-blue-700 hover:to-indigo-800 transition duration-300 transform hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-lg relative" // ⭐ Added relative for spinner positioning
           >
-            {isLogin ? "Log In" : "Register Now"}
+            {isLoading ? (
+              <ClipLoader
+                color={"#ffffff"} // White spinner color
+                size={20} // Size of the spinner
+                aria-label="Loading Spinner"
+                data-testid="loader"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" // Center the spinner
+              />
+            ) : (
+              isLogin ? "Log In" : "Register Now" // ⭐ Show button text when not loading
+            )}
           </button>
         </form>
 
