@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ClipLoader } from 'react-spinners'; 
+import { ClipLoader } from 'react-spinners';
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,7 +13,7 @@ const LoginRegister = () => {
     email: "",
     password: ""
   });
-  const [isLoading, setIsLoading] = useState(false); // ⭐ NEW STATE for loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -25,13 +25,12 @@ const LoginRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic form validation
     if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
       toast.error("Please fill in all required fields.");
       return;
     }
 
-    setIsLoading(true); // ⭐ Set loading to true before API call
+    setIsLoading(true);
 
     const url = isLogin ? "/api/auth/login" : "/api/auth/register";
 
@@ -51,7 +50,7 @@ const LoginRegister = () => {
           autoClose: 2000,
           onClose: () => setIsLogin(true)
         });
-        setFormData({ name: "", email: "", password: "" }); // Clear form on successful registration
+        setFormData({ name: "", email: "", password: "" });
       }
     } catch (err) {
       const msg = err.response?.data?.message || "Something went wrong. Please try again.";
@@ -60,13 +59,13 @@ const LoginRegister = () => {
         autoClose: 3000,
       });
     } finally {
-      setIsLoading(false); // ⭐ Set loading to false after API call (success or error)
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-sans">
-      <ToastContainer /> {/* Toastify container */}
+      <ToastContainer />
       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl border border-gray-200 p-8 space-y-8 animate-fade-in-down">
         <h2 className="text-4xl font-extrabold mb-6 text-center text-gray-800 tracking-tight">
           {isLogin ? "Welcome Back!" : "Join Our Community!"}
@@ -116,19 +115,19 @@ const LoginRegister = () => {
           </div>
           <button
             type="submit"
-            disabled={isLoading} // ⭐ Disable button while loading
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-blue-700 hover:to-indigo-800 transition duration-300 transform hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-lg relative" // ⭐ Added relative for spinner positioning
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 rounded-lg shadow-lg hover:from-blue-700 hover:to-indigo-800 transition duration-300 transform hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 text-lg relative flex items-center justify-center min-w-[150px] h-12"
           >
             {isLoading ? (
               <ClipLoader
-                color={"#ffffff"} // White spinner color
-                size={20} // Size of the spinner
+                color={"#ffffff"}
+                size={20}
                 aria-label="Loading Spinner"
                 data-testid="loader"
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" // Center the spinner
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               />
             ) : (
-              isLogin ? "Log In" : "Register Now" // ⭐ Show button text when not loading
+              isLogin ? "Log In" : "Register Now"
             )}
           </button>
         </form>

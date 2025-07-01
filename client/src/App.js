@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import HomePage from "./pages/HomePage";
 import LoginRegister from "./pages/LoginRegister";
 import Dashboard from "./pages/Dashboard";
 import Notes from "./pages/Notes";
@@ -20,20 +21,20 @@ import ConnectedChats from "./pages/Mentor/ConnectedChats";
 import MentorshipHub from "./pages/Mentor/MentorshipHub";
 import MentorList from "./pages/MentorList";
 import UpdateMentorProfile from "./pages/UpdateMentorProfile";
-
-// ⭐ Import the new CareerPathFinder component ⭐
 import CareerPathFinder from "./components/CareerPathFinder";
-// ⭐ NEW: Import MyRoadmapsPage component ⭐
 import MyRoadmapsPage from "./pages/MyRoadmapsPage";
-import CareerHubPage from './pages/CareerHubPage'; 
-
+import CareerHubPage from "./pages/CareerHubPage";
+import AboutPage from "./pages/AboutPage";
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LoginRegister />} />
+          <Route path="/login" element={<LoginRegister />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           <Route
             path="/dashboard"
@@ -181,6 +182,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route path="*" element={<NotFoundPage />} />
         </Routes>
 
         <ToastContainer
