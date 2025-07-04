@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { CheckCircle, User, GraduationCap, Code, Image, FileText, Sparkles, Loader2 } from "lucide-react";
 
 const BecomeMentor = () => {
   const [form, setForm] = useState({
@@ -15,7 +16,8 @@ const BecomeMentor = () => {
 
   const [isMentor, setIsMentor] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false); // New state for submission loading
+  const [submitting, setSubmitting] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -54,7 +56,7 @@ const BecomeMentor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true); // Set submitting to true
+    setSubmitting(true);
     try {
       const payload = {
         ...form,
@@ -70,7 +72,7 @@ const BecomeMentor = () => {
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to apply");
     } finally {
-      setSubmitting(false); // Reset submitting to false
+      setSubmitting(false);
     }
   };
 
@@ -78,125 +80,267 @@ const BecomeMentor = () => {
     navigate("/mentor/edit-profile");
   };
 
-  if (loading) return <p className="text-center p-6">Checking status...</p>;
+  // Enhanced Loading Component
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin mx-auto" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+          </div>
+          <p className="text-gray-600 font-medium">Checking your mentor status...</p>
+          <p className="text-sm text-gray-400 mt-1">This won't take long</p>
+        </div>
+      </div>
+    );
+  }
 
+  // Enhanced Success State
   if (isMentor) {
     return (
-      <div className="text-center p-6 bg-green-50 border border-green-300 rounded-md max-w-lg mx-auto mt-10 shadow-md">
-        <p className="text-green-700 font-semibold text-lg mb-4 flex items-center justify-center">
-          <span className="text-2xl mr-2">✅</span> You are already a mentor!
-        </p>
-        <button
-          onClick={handleEditProfile}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-        >
-          Edit Profile
-        </button>
+      <div className="min-h-[400px] flex items-center justify-center p-6">
+        <div className="text-center max-w-md mx-auto">
+          <div className="relative mb-6">
+            <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+              <CheckCircle className="w-12 h-12 text-white" />
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">You're Already a Mentor!</h2>
+          <p className="text-gray-600 mb-6">Ready to inspire and guide the next generation of learners.</p>
+          
+          <button
+            onClick={handleEditProfile}
+            className="group relative bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <span className="relative z-10">Edit Profile</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-xl mt-10 border border-gray-200">
-      <h2 className="text-3xl font-extrabold mb-8 text-center text-gray-800">Become a Mentor</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-              required
-            />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
+            <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <div>
-            <label htmlFor="college" className="block mb-2 text-sm font-medium text-gray-700">College</label>
-            <input
-              type="text"
-              id="college"
-              name="college"
-              value={form.college}
-              onChange={handleChange}
-              className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-            />
-          </div>
-          <div>
-            <label htmlFor="branch" className="block mb-2 text-sm font-medium text-gray-700">Branch</label>
-            <input
-              type="text"
-              id="branch"
-              name="branch"
-              value={form.branch}
-              onChange={handleChange}
-              className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-            />
-          </div>
-          <div>
-            <label htmlFor="profilePic" className="block mb-2 text-sm font-medium text-gray-700">Profile Picture URL</label>
-            <input
-              type="url" // Use type="url" for better semantic meaning and browser validation
-              id="profilePic"
-              name="profilePic"
-              value={form.profilePic}
-              onChange={handleChange}
-              className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="skills" className="block mb-2 text-sm font-medium text-gray-700">Skills</label>
-          <input
-            type="text"
-            id="skills"
-            name="skills"
-            value={form.skills}
-            onChange={handleChange}
-            placeholder="e.g., JavaScript, React, Node.js, Python"
-            className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-            required
-          />
-          <p className="mt-2 text-xs text-gray-500">
-            Separate multiple skills with commas.
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Become a Mentor</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Share your knowledge and experience to help guide the next generation of learners on their journey.
           </p>
         </div>
 
-        <div>
-          <label htmlFor="bio" className="block mb-2 text-sm font-medium text-gray-700">Bio</label>
-          <textarea
-            id="bio"
-            name="bio"
-            value={form.bio}
-            onChange={handleChange}
-            placeholder="Tell us about yourself, your experience, and what you can offer as a mentor..."
-            className="w-full border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
-            rows={5}
-            required
-          ></textarea>
+        {/* Form Card */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 md:p-10">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Personal Information Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Name Field */}
+              <div className="space-y-2">
+                <label htmlFor="name" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <User className="w-4 h-4 mr-2 text-indigo-500" />
+                  Full Name
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('name')}
+                    onBlur={() => setFocusedField(null)}
+                    className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out ${
+                      focusedField === 'name' 
+                        ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                        : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                    } focus:outline-none`}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* College Field */}
+              <div className="space-y-2">
+                <label htmlFor="college" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <GraduationCap className="w-4 h-4 mr-2 text-indigo-500" />
+                  College/University
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="college"
+                    name="college"
+                    value={form.college}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('college')}
+                    onBlur={() => setFocusedField(null)}
+                    className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out ${
+                      focusedField === 'college' 
+                        ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                        : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                    } focus:outline-none`}
+                    placeholder="e.g., MIT, Stanford University"
+                  />
+                </div>
+              </div>
+
+              {/* Branch Field */}
+              <div className="space-y-2">
+                <label htmlFor="branch" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <Code className="w-4 h-4 mr-2 text-indigo-500" />
+                  Field of Study
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="branch"
+                    name="branch"
+                    value={form.branch}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('branch')}
+                    onBlur={() => setFocusedField(null)}
+                    className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out ${
+                      focusedField === 'branch' 
+                        ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                        : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                    } focus:outline-none`}
+                    placeholder="e.g., Computer Science, Data Science"
+                  />
+                </div>
+              </div>
+
+              {/* Profile Picture Field */}
+              <div className="space-y-2">
+                <label htmlFor="profilePic" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <Image className="w-4 h-4 mr-2 text-indigo-500" />
+                  Profile Picture URL
+                </label>
+                <div className="relative">
+                  <input
+                    type="url"
+                    id="profilePic"
+                    name="profilePic"
+                    value={form.profilePic}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('profilePic')}
+                    onBlur={() => setFocusedField(null)}
+                    className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out ${
+                      focusedField === 'profilePic' 
+                        ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                        : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                    } focus:outline-none`}
+                    placeholder="https://example.com/your-photo.jpg"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Skills Field */}
+            <div className="space-y-2">
+              <label htmlFor="skills" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
+                Skills & Expertise
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="skills"
+                  name="skills"
+                  value={form.skills}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('skills')}
+                  onBlur={() => setFocusedField(null)}
+                  className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out ${
+                    focusedField === 'skills' 
+                      ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                      : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                  } focus:outline-none`}
+                  placeholder="JavaScript, React, Node.js, Python, Machine Learning"
+                  required
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-2 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                💡 <strong>Tip:</strong> Separate multiple skills with commas. Be specific about your expertise areas.
+              </p>
+            </div>
+
+            {/* Bio Field */}
+            <div className="space-y-2">
+              <label htmlFor="bio" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                <FileText className="w-4 h-4 mr-2 text-indigo-500" />
+                About You
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <div className="relative">
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={form.bio}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('bio')}
+                  onBlur={() => setFocusedField(null)}
+                  className={`w-full border-2 rounded-xl shadow-sm px-4 py-3 transition-all duration-200 ease-in-out resize-none ${
+                    focusedField === 'bio' 
+                      ? 'border-indigo-500 ring-4 ring-indigo-500/20 bg-white' 
+                      : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+                  } focus:outline-none`}
+                  rows={5}
+                  placeholder="Tell us about your journey, experience, and what you're passionate about teaching. What unique perspective can you bring to mentoring?"
+                  required
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-500">
+                  Share your story and what motivates you to mentor others.
+                </p>
+                <span className="text-xs text-gray-400">
+                  {form.bio.length} characters
+                </span>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-6">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="group relative w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-md disabled:cursor-not-allowed overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                {submitting ? (
+                  <span className="relative z-10 flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin mr-3" />
+                    <span className="animate-pulse">Submitting...</span>
+                  </span>
+                ) : (
+                  <span className="relative z-10 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                    Submit Application
+                  </span>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={submitting} // Disable button while submitting
-        >
-          {submitting ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Submitting...
-            </span>
-          ) : (
-            "Submit Application"
-          )}
-        </button>
-      </form>
+        {/* Footer Note */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            By submitting this application, you agree to our mentorship guidelines and community standards.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

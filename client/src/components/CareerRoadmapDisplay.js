@@ -326,7 +326,7 @@ const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
                 : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500'
               }`}
           >
-            {isSaving ? 'Saving...' : 'Save Roadmap'}
+            {isSaving ? 'Saving...' : 'Save'}
           </button>
         )}
 
@@ -334,7 +334,7 @@ const CareerRoadmapDisplay = ({ career, onBack, onRoadmapUpdated }) => {
           onClick={onBack}
           className="bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
         >
-          {isSavedRoadmap ? 'Back to My Roadmaps' : 'Back to Career Suggestions'}
+          {isSavedRoadmap ? 'Back to My Roadmaps' : 'Back'}
         </button>
       </div>
     </div>

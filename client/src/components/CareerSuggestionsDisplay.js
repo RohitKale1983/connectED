@@ -2,7 +2,7 @@
 import React from 'react';
 
 // You might want to import some simple icons if you use them, e.g., from heroicons
-// import { BriefcaseIcon, ChartBarIcon, ScaleIcon } from '@heroicons/react/24/outline'; // Example icons
+ import { BriefcaseIcon, ChartBarIcon, ScaleIcon } from '@heroicons/react/24/outline'; // Example icons
 
 const CareerSuggestionsDisplay = ({ suggestions, onExploreRoadmap }) => {
   if (!suggestions || suggestions.length === 0) {
@@ -43,11 +43,11 @@ const CareerSuggestionsDisplay = ({ suggestions, onExploreRoadmap }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 text-gray-600 text-sm sm:text-base mb-6">
             <div className="flex items-center">
-              {/* <ScaleIcon className="h-5 w-5 text-gray-500 mr-2" /> (Example icon) */}
+             <ScaleIcon className="h-5 w-5 text-gray-500 mr-2" /> 
               <strong className="text-gray-800 mr-2">Average Salary:</strong> {career.averageSalaryLPA}
             </div>
             <div className="flex items-center">
-              {/* <ChartBarIcon className="h-5 w-5 text-gray-500 mr-2" /> (Example icon) */}
+               <ChartBarIcon className="h-5 w-5 text-gray-500 mr-2" />
               <strong className="text-gray-800 mr-2">Demand Level:</strong>
               <span className={`font-bold ${
                 career.demandLevel === 'Very High' ? 'text-purple-600' :
